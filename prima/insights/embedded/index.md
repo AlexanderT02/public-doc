@@ -45,6 +45,7 @@ Authorization: Bearer <embedded-token>
 
 #  Endpoints
 
+---
 
 ```http
 POST /companies/{ergoId}/token
