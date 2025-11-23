@@ -1,3 +1,7 @@
+---
+title: ""
+---
+
 # Embedded API Documentation
 
 ##  Base URL
@@ -9,6 +13,20 @@ https://insights.madebyflow.de/api/v1/embedded
 
 All endpoints in this document are relative to this base URL.
 
+## API Error Object Structure
+
+All error responses follow this standardized format:
+
+```json
+{
+  "timestamp": "2025-11-23T01:26:57.412456288Z",
+  "status": 404,
+  "error": "Not Found",
+  "message": "No company found for ERGO ID: 700222905",
+  "path": "/api/v1/embedded/companies/700222905/token",
+  "details": []
+}
+```
 
 ## Authentication
 
@@ -68,3 +86,14 @@ Generates a short-lived token that grants access to the embedded Company Insight
 | **bearerAuthorizationToken** | String | Short-lived bearer token required when calling the embedded interface or API endpoints. |
 | **maxUsage** | Integer | Maximum number of allowed API calls using this token. |
 | **expires** | Instant (UTC) | Timestamp when the token becomes invalid. |
+
+### Error Responses
+
+#### 404 – Company Not Found
+No company exists for the given `ergoId`.
+
+#### 404 – No Reports Available
+The company exists, but no reports match the requested date range.
+
+#### 400 – Invalid Date Range
+The provided dates are invalid (e.g. unsupported range or future dates).
