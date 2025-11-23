@@ -1,11 +1,6 @@
----
-title: ""
----
-
 # Embedded API Documentation
 
-##  Base URL
-
+## Base URL
 
 ```
 https://insights.madebyflow.de/api/v1/embedded
@@ -13,9 +8,11 @@ https://insights.madebyflow.de/api/v1/embedded
 
 All endpoints in this document are relative to this base URL.
 
-## API Error Object Structure
+---
 
-All error responses follow this standardized format:
+## Error Object Format
+
+Every error response uses this structure:
 
 ```json
 {
@@ -28,32 +25,31 @@ All error responses follow this standardized format:
 }
 ```
 
+---
+
 ## Authentication
 
-All requests must include the API key header:
+All API requests must include:
 
 ```
 INSIGHTS-API-KEY: <api-key>
 ```
 
-Embedded interface/API calls require an additional bearer token (issued via token endpoint):
+For embedded interface/API usage, an additional bearer token is required:
 
 ```
 Authorization: Bearer <embedded-token>
 ```
 
-
-#  Endpoints
-
 ---
 
-```http
-POST /companies/{ergoId}/token
-```
+# Endpoints
 
-Creates a short-lived token granting access to the embedded **Company Insights** interface for the company identified by its `ergoId`.
+## POST /companies/{ergoId}/token
 
-###  Request Body (optional)
+Creates a short‑lived embedded token granting access to the **Company Insights** interface for the company identified by `ergoId`.
+
+### Optional Request Body
 
 ```json
 {
@@ -62,13 +58,14 @@ Creates a short-lived token granting access to the embedded **Company Insights**
 }
 ```
 
-**Notes**
+### Notes
 - `from` and `to` are optional  
-- Date format: `yyyy-MM-dd`  
+- Format: `yyyy-MM-dd`  
 - If omitted, the **last 7 days** are used  
 
+---
 
-###  Response (201 Created)
+## Response (201 Created)
 
 ```json
 {
@@ -79,24 +76,26 @@ Creates a short-lived token granting access to the embedded **Company Insights**
 }
 ```
 
-###  Field Description
+### Field Description
 
-| Field | Type | Explanation |
+| Field | Type | Description |
 |-------|------|-------------|
-| **embeddedUrl** | String | URL that loads the embedded Insights interface (e.g., in an iFrame). |
-| **bearerAuthorizationToken** | String | Short-lived bearer token required when calling the embedded interface or API endpoints. |
-| **maxUsage** | Integer | Maximum number of allowed API calls using this token. |
-| **expires** | Instant (UTC) | Timestamp when the token becomes invalid. |
+| embeddedUrl | String | URL used to load the embedded Insights interface (e.g., inside an iFrame). |
+| bearerAuthorizationToken | String | Short‑lived bearer token required for embedded interface/API calls. |
+| maxUsage | Integer | Maximum number of allowed API calls using this token. |
+| expires | Instant (UTC) | Timestamp when the token becomes invalid. |
 
-### Error Responses
+---
 
-#### 404 – Company Not Found
-No company exists for the given `ergoId`.
+## Error Responses
 
-#### 404 – No Reports Available
-The company exists, but no reports match the requested date range.
+### 404 — Company Not Found
+No company exists for the provided `ergoId`.
 
-#### 400 – Invalid Date Range
-The provided dates are invalid (e.g. unsupported range or future dates).
+### 404 — No Reports Available
+Company exists, but no reports match the requested date range.
+
+### 400 — Invalid Date Range
+Provided dates are not allowed (bad format, unsupported range, future dates, etc.).
 
 ---
