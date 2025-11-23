@@ -8,7 +8,6 @@ https://insights.madebyflow.de/api/v1/embedded
 
 All endpoints in this document are relative to this base URL.
 
----
 
 ## Error Object Format
 
@@ -25,23 +24,15 @@ Every error response uses this structure:
 }
 ```
 
----
 
 ## Authentication
 
-All API requests must include:
+All API requests must include the following http header:
 
 ```
 INSIGHTS-API-KEY: <api-key>
 ```
 
-For embedded interface/API usage, an additional bearer token is required:
-
-```
-Authorization: Bearer <embedded-token>
-```
-
----
 
 # Endpoints
 
@@ -63,16 +54,18 @@ Creates a short‑lived embedded token granting access to the **Company Insights
 - Format: `yyyy-MM-dd`  
 - If omitted, the **last 7 days** are used  
 
----
 
 ## Response (201 Created)
 
 ```json
 {
   "embeddedUrl": "https://insights.madebyflow.de/embedded/companies/932?token=<bearer-token>",
-  "bearerAuthorizationToken": "eyJhbGciOi...",
-  "maxUsage": 10,
-  "expires": "2025-01-20T10:15:30Z"
+  "meta": {
+    "companyIds": ["932"],
+    "bearerAuthorizationToken": "eyJhbGciOi...",
+    "maxUsage": 10,
+    "expires": "2025-01-20T10:15:30Z"
+  }
 }
 ```
 
@@ -80,12 +73,15 @@ Creates a short‑lived embedded token granting access to the **Company Insights
 
 | Field | Type | Description |
 |-------|------|-------------|
-| embeddedUrl | String | URL used to load the embedded Insights interface (e.g., inside an iFrame). |
-| bearerAuthorizationToken | String | Short‑lived bearer token required for embedded interface/API calls. |
-| maxUsage | Integer | Maximum number of allowed API calls using this token. |
-| expires | Instant (UTC) | Timestamp when the token becomes invalid. |
+| **embeddedUrl** | String | **Primary response field.** A fully signed (“magic link”) URL used to load the Company Insights interface directly (e.g., inside an iFrame). |
+| **meta** | Object | Additional metadata describing token scope, access limitations, and validity. |
+| **meta.companyIds** | Array[String] | List of company IDs that can be accessed with this embedded token. Defines the visible company scope. |
+| **meta.bearerAuthorizationToken** | String | Short-lived bearer token used for API requests within the embedded Insights flow. Access is restricted to the companies listed in `meta.companyIds`. |
+| **meta.maxUsage** | Integer | Maximum number of API requests that may be performed using this token before it becomes invalid. |
+| **meta.expires** | Instant (UTC) | Exact timestamp when the token (and the embedded URL) expires and can no longer be used. |
 
----
+
+
 
 ## Error Responses
 
