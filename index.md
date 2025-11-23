@@ -1,3 +1,7 @@
+---
+title: Documentation
+---
+
 # Embedded API Documentation
 
 ##  Base URL
