@@ -69,18 +69,28 @@ Creates a short‑lived embedded token granting access to the **Company Insights
 }
 ```
 
-### Field Description
+## Response Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| **embeddedUrl** | String | **Primary response field.** A fully signed (“magic link”) URL used to load the Company Insights interface directly (e.g., inside an iFrame). |
-| **meta** | Object | Additional metadata describing token scope, access limitations, and validity. |
-| **meta.companyIds** | Array[String] | List of company IDs that can be accessed with this embedded token. Defines the visible company scope. |
-| **meta.bearerAuthorizationToken** | String | Short-lived bearer token used for API requests within the embedded Insights flow. Access is restricted to the companies listed in `meta.companyIds`. |
-| **meta.maxUsage** | Integer | Maximum number of API requests that may be performed using this token before it becomes invalid. |
-| **meta.expires** | Instant (UTC) | Exact timestamp when the token (and the embedded URL) expires and can no longer be used. |
+### embeddedUrl — *String*
+**Primary response field.**  
+A fully signed (“magic link”) URL used to load the Company Insights interface directly (e.g., inside an iFrame).
 
 
+### meta — *Object*
+Additional metadata describing token access limitations, visibility scope, and validity.
+
+#### meta.companyIds — *Array[String]*
+List of company IDs that can be accessed with this token. Defines the visibility scope.
+
+#### meta.bearerAuthorizationToken — *String*
+Short-lived bearer token for API requests in the embedded flow.  
+Access is limited to the companies listed in `meta.companyIds`.
+
+#### meta.maxUsage — *Integer*
+Maximum number of allowed API requests using this token.
+
+#### meta.expires — *Instant (UTC)*
+Exact timestamp when the token and embedded URL expire and can no longer be used.
 
 
 ## Error Responses
