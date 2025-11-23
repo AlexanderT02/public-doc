@@ -1,5 +1,30 @@
+
 header,
 .site-header,
-.page-header {
-  display: none !important;
+.page-header,
+.site-nav,
+.navbar,
+.top-bar,
+#header,
+#banner,
+#masthead,
+.masthead,
+.wrapper header,
+.wrapper > header,
+.container > header,
+.header,
+.brand,
+.branding,
+#title-block-header,
+h1.site-title,
+.site-title,
+nav,
+#nav,
+#site-header {
+    display: none !important;
+}
+
+body, .page-content, .main-content, #main-content, main {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
 }
