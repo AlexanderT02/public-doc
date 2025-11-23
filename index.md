@@ -2,6 +2,7 @@
 
 ##  Base URL
 
+
 ```
 https://insights.madebyflow.de/api/v1/embedded
 ```
