@@ -1,12 +1,17 @@
 # Embedded API Documentation
 
-## Base URL
-
 ```
 https://insights.madebyflow.de/api/v1/embedded
 ```
 
 All endpoints in this document are relative to this base URL.
+## Authentication
+
+All API requests must include the following http header:
+
+```
+INSIGHTS-API-KEY: <api-key>
+```
 
 
 ## Error Object Format
@@ -25,13 +30,6 @@ Every error response uses this structure:
 ```
 
 
-## Authentication
-
-All API requests must include the following http header:
-
-```
-INSIGHTS-API-KEY: <api-key>
-```
 
 
 # Endpoints
