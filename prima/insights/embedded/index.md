@@ -52,7 +52,7 @@ Creates a short‑lived embedded token granting access to the **Company Insights
 ### Notes
 - `from` and `to` are optional  
 - Format: `yyyy-MM-dd`  
-- If omitted, the **last 7 days** are used  
+- If omitted, the API automatically selects the most recent complete weekly period, starting on Monday and ending on Sunday. 
 
 
 ## Response (201 Created)
