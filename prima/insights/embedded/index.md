@@ -46,15 +46,11 @@ Authorization: Bearer <embedded-token>
 #  Endpoints
 
 
-## Endpoint: /companies/{ergoId}/token
-
-Creates a short-lived token granting access to the embedded **Company Insights** interface for the company identified by its `ergoId`.
-
-**HTTP Request**
 ```http
 POST /companies/{ergoId}/token
 ```
 
+Creates a short-lived token granting access to the embedded **Company Insights** interface for the company identified by its `ergoId`.
 
 ###  Request Body (optional)
 
@@ -101,3 +97,5 @@ The company exists, but no reports match the requested date range.
 
 #### 400 – Invalid Date Range
 The provided dates are invalid (e.g. unsupported range or future dates).
+
+---
