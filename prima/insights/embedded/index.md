@@ -46,10 +46,14 @@ Authorization: Bearer <embedded-token>
 #  Endpoints
 
 
-##  POST /companies/{ergoId}/token
+## Endpoint: /companies/{ergoId}/token
 
+Creates a short-lived token granting access to the embedded **Company Insights** interface for the company identified by its `ergoId`.
 
-Generates a short-lived token that grants access to the embedded Company Insights interface for the company identified by their ergoId.
+**HTTP Request**
+```http
+POST /companies/{ergoId}/token
+```
 
 
 ###  Request Body (optional)
