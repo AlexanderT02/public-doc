@@ -1,7 +1,3 @@
----
-title: Documentation
----
-
 # Embedded API Documentation
 
 ##  Base URL
@@ -39,7 +35,6 @@ Click any endpoint to expand its full documentation.
 
 ## POST /companies/{ergoId}/token
 
-<details>
 <summary><strong>Create an Embedded Company Detail Insight Token</strong></summary>
 
 
@@ -88,7 +83,4 @@ Generates a short-lived token that grants access to the embedded Company Insight
 | **maxUsage** | Integer | Maximum number of allowed API calls using this token. |
 | **expires** | Instant (UTC) | Timestamp when the token becomes invalid. |
 
-
-
-</details>
 
