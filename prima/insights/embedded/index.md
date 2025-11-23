@@ -9,7 +9,6 @@ https://insights.madebyflow.de/api/v1/embedded
 
 All endpoints in this document are relative to this base URL.
 
----
 
 ## Authentication
 
@@ -25,21 +24,15 @@ Embedded interface/API calls require an additional bearer token (issued via toke
 Authorization: Bearer <embedded-token>
 ```
 
----
 
 #  Endpoints
 
-Below you find all available endpoints of the Embedded API.  
-Click any endpoint to expand its full documentation.
 
----
-
-## POST /companies/{ergoId}/token
+##  POST /companies/{ergoId}/token
 
 
 Generates a short-lived token that grants access to the embedded Company Insights interface for the company identified by their ergoId.
 
----
 
 ###  Request Body (optional)
 
@@ -55,7 +48,6 @@ Generates a short-lived token that grants access to the embedded Company Insight
 - Date format: `yyyy-MM-dd`  
 - If omitted, the **last 7 days** are used  
 
----
 
 ###  Response (201 Created)
 
