@@ -1,0 +1,5 @@
+header,
+.site-header,
+.page-header {
+  display: none !important;
+}
