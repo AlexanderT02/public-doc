@@ -89,7 +89,7 @@ Creates a short‑lived embedded token granting access to the **Company Insights
 No company exists for the provided `ergoId`.
 
 ### 404 — No Reports Available
-Company exists, but no reports match the requested date range.
+Company exists, but no company insights match the requested date range.
 
 ### 400 — Invalid Date Range
 Provided dates are not allowed (bad format, unsupported range, future dates, etc.).
