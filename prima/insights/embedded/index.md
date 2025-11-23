@@ -36,13 +36,6 @@ Click any endpoint to expand its full documentation.
 
 ## POST /companies/{ergoId}/token
 
-<summary><strong>Create an Embedded Company Detail Insight Token</strong></summary>
-
-
-###  Path
-```
-POST /companies/{ergoId}/token
-```
 
 Generates a short-lived token that grants access to the embedded Company Insights interface for the company identified by their ergoId.
 
