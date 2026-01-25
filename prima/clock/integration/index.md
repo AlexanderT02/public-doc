@@ -55,7 +55,17 @@ The API key must have the **READ** permission to access this endpoint.
 |------|------|----------|---------|-------------|
 | `page` | integer | no | `0` | Zero-based page index |
 | `size` | integer | no | `100` | Number of items per page |
-| `timezone` | string | no | `Europe/Rome` | IANA timezone used to convert timestamps (e.g. `Europe/Rome`, `Europe/Berlin`) |
+| `timezone` | string | no | `Europe/Rome` | IANA timezone used to convert timestamps |
+| `from` | date (`YYYY-MM-DD`) | no | — | Start date (inclusive) |
+| `to` | date (`YYYY-MM-DD`) | no | — | End date (inclusive) |
+
+## Date Filter Logic (`from` / `to`)
+
+- Both parameters are **optional**
+- Dates must be provided in **ISO-8601 format**: `YYYY-MM-DD`
+- **Filtering is applied on the creation timestamp** (`created`)
+- The `created` timestamp is evaluated in **UTC**
+- The `timezone` parameter **does not affect filtering**, only timestamp conversion in the response
 
 ### Timezone Notes
 - If omitted, `Europe/Rome` is used.
@@ -133,3 +143,4 @@ Missing or invalid API key.
 
 ### 403 — Forbidden
 API key does not have READ permission.
+
