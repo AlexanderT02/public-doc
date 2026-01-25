@@ -1,4 +1,4 @@
-# Work Time Export API Documentation
+# PRIMA clock integration API Documentation
 
 ```
 https://clock.madebyflow.de/api/v1/integration
@@ -143,4 +143,5 @@ Missing or invalid API key.
 
 ### 403 — Forbidden
 API key does not have READ permission.
+
 
