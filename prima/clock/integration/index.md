@@ -1,4 +1,4 @@
-# PRIMA clock integration API Documentation
+# PRIMA Clock Integration API Documentation
 
 ```
 https://clock.madebyflow.de/api/v1/integration
@@ -8,7 +8,7 @@ All endpoints in this document are relative to this base URL.
 
 ---
 
-## Authentication
+##  Authentication
 
 All API requests must include the following HTTP header:
 
@@ -25,7 +25,8 @@ API keys have permissions. Endpoints require either:
 
 ## Error Object Format
 
-Every error response uses this structure:
+<details>
+<summary><strong>Show error object structure</strong></summary>
 
 ```json
 {
@@ -41,21 +42,22 @@ Every error response uses this structure:
 }
 ```
 
-Notes:
-- `errors[]` is typically present for validation errors (HTTP 400).
-- `code` values depend on the server-side error mapping (examples in this doc use descriptive names).
+**Notes**
+- `errors[]` is typically present for validation errors (HTTP 400)
+- `code` values depend on the server-side error mapping
+
+</details>
 
 ---
 
-# Endpoints
+# Work Time Endpoints
 
-## GET /work-times
+---
+
+<details>
+<summary><strong>GET /work-times</strong></summary>
 
 Exports finished work time entries in a paginated format.
-
-This endpoint is intended for **system integrations** and is accessible **only via API key authentication**.
-
-The API key must have the **READ** permission to access this endpoint.
 
 Required permission: `PERM_READ`
 
@@ -75,15 +77,11 @@ Required permission: `PERM_READ`
 
 ### Date Filter Logic (`from` / `to`)
 
-- Both parameters are **optional**
-- Dates must be provided in **ISO-8601 format**: `YYYY-MM-DD`
-- **Filtering is applied on the creation timestamp** (`created`)
-- The `created` timestamp is evaluated in **UTC**
-- The `timezone` parameter **does not affect filtering**, only timestamp conversion in the response
-
-#### Timezone Notes
-- If omitted, `Europe/Rome` is used.
-- If invalid, the request fails with a validation error.
+- Both parameters are optional
+- Dates must be provided in ISO-8601 format (`YYYY-MM-DD`)
+- Filtering is applied on the creation timestamp (`created`)
+- The `created` timestamp is evaluated in UTC
+- The `timezone` parameter does not affect filtering
 
 ---
 
@@ -118,6 +116,10 @@ Newest entries are returned first.
         {
           "projectId": 42,
           "projectName": "Website Relaunch"
+        },
+	{
+          "projectId": 20,
+          "projectName": "SalesViewer"
         }
       ]
     },
@@ -149,26 +151,28 @@ Newest entries are returned first.
 
 ### Error Responses
 
-#### 400 — Validation Error
-Invalid parameters (e.g. invalid timezone).
+- **400 — Validation Error**  
+  Invalid parameters (e.g. invalid timezone)
 
-
----
-
-# Customer Import API
-
-The import is a **session-based** workflow identified by `importId`:
-
-1. **INIT** — announce import size (pages + total customers)
-2. **PAGE** — send pages (0-based page index)
-3. **STATUS** — poll the status at any time
-4. **FINALIZE** — apply the import to the main `customers` table
-5. **CANCEL** — abort an import and delete staging data
+</details>
 
 ---
 
+#  Customer Import Endpoints
 
-## POST /customers/import/init
+The import is a **session-based workflow** identified by `importId`.
+
+### Workflow
+1. **INIT** — announce import size
+2. **PAGE** — send pages
+3. **FINALIZE** — apply import
+4. **STATUS** — optional poll status
+5. **CANCEL** — optional abort import
+
+---
+
+<details>
+<summary><strong>POST /customers/import/init</strong></summary>
 
 Initializes a new customer import session.
 
@@ -183,43 +187,36 @@ Required permission: `PERM_WRITE`
   "importId": "import-2026-01-26T120000Z",
   "totalPages": 15,
   "totalCustomers": 14400,
-  "pageSize": 1000,
+  "pageSize": 1000
 }
 ```
+
+---
 
 ### Fields
 
 | Field | Type | Required | Description |
 |------|------|----------|-------------|
 | `importId` | string | yes | Unique identifier of the import session |
-| `totalPages` | integer | yes | Total number of pages that will be sent (must be ≥ 1) |
-| `totalCustomers` | integer | yes | Expected total number of customers (must be ≥ 0) |
-| `pageSize` | integer | yes | page size that will be used (must be ≥ 1) |
-
-### Notes
-
-- The import is valid for a limited time (TTL) and may expire if not completed.
+| `totalPages` | integer | yes | Total number of pages (≥ 1) |
+| `totalCustomers` | integer | yes | Expected total customers (≥ 0) |
+| `pageSize` | integer | yes | Page size used (≥ 1) |
 
 ---
 
-### Success Response (201 Created)
-
-Empty body.
-
----
+### Success Response
+- **201 Created** — empty body
 
 ### Error Responses
+- **400** Validation error
+- **409** Import already active
 
-#### 400 — Validation Error
-Invalid JSON or invalid values (e.g. `totalPages < 1`).
-
-#### 409 — Conflict Error
-Import already active
-
+</details>
 
 ---
 
-## POST /customers/import/page
+<details>
+<summary><strong>POST /customers/import/page</strong></summary>
 
 Uploads one page of customer data.
 
@@ -247,52 +244,31 @@ Required permission: `PERM_WRITE`
 }
 ```
 
-### Fields
-
-| Field | Type | Required | Description |
-|------|------|----------|-------------|
-| `importId` | string | yes | Import session identifier |
-| `page` | integer | yes | Zero-based page index (must be ≥ 0) |
-| `customers` | array | yes | Customers in this page (must not be empty) |
-
-### Customer object
-
-| Field | Type | Required | Description |
-|------|------|----------|-------------|
-| `internalId` | string | yes | Unique customer identifier |
-| `name` | string | yes | Customer name |
-| `place` | string | no | the place where the customer is located|
-
 ---
 
 ### Behavior
 
-- Pages may arrive out of order.
-- Duplicate page submissions are accepted; Last submission is used.
-- When `receivedPages == totalPages`, the server sets the import status to `READY`.
+- Pages may arrive out of order
+- Duplicate page submissions are accepted (last wins)
+- Status switches to `READY` when all pages are received
 
 ---
 
-### Success Response (202 Accepted)
-
-Empty body.
-
----
+### Success Response
+- **202 Accepted**
 
 ### Error Responses
+- **400** Validation error
+- **409** Import not accepting pages
 
-#### 400 — Validation Error
-Invalid JSON, missing fields, empty customers list, invalid page value.
-
-
-#### 409 — Conflict
-Import not initialized, cancelled, done, or otherwise not accepting pages.
+</details>
 
 ---
 
-## POST /customers/import/finalize
+<details>
+<summary><strong>POST /customers/import/finalize</strong></summary>
 
-Finalizes the import and applies the changes to the `customers` table.
+Finalizes the import and applies changes.
 
 Required permission: `PERM_WRITE`
 
@@ -310,37 +286,28 @@ Required permission: `PERM_WRITE`
 
 ### Finalize Validation
 
-Finalize will only run if:
-
-- The import exists and is in status `READY`
+- Import exists and status is `READY`
 - `receivedPages == totalPages`
-- The number of staged customer records equals `totalCustomers` (expected count from init)
+- Staged customer count equals `totalCustomers`
 - Staging data exists
 
-If any validation fails, the request returns a conflict error.
-
 ---
 
-### Success Response (202 Accepted)
-
-Empty body.
-
----
+### Success Response
+- **202 Accepted**
 
 ### Error Responses
+- **400** Validation error
+- **409** Import not ready or validation failed
 
-#### 400 — Validation Error
-Invalid JSON or missing/empty `importId`.
-
-
-#### 409 — Conflict
-Import not ready, incomplete, cancelled, or validation failed.
+</details>
 
 ---
 
-## POST /customers/import/cancel
+<details>
+<summary><strong>POST /customers/import/cancel</strong></summary>
 
-Cancels an import session and deletes staging data for this import.
+Cancels an import session and deletes staging data.
 
 Required permission: `PERM_WRITE`
 
@@ -358,29 +325,27 @@ Required permission: `PERM_WRITE`
 
 ### Behavior
 
-- Cancelling is allowed only in states: `RECEIVING`, `READY`, `FAILED`
-- Staging records are deleted
+- Cancel allowed in states:
+  - RECEIVING
+  - READY
+  - FAILED
+- Staging data is deleted
 
 ---
 
-### Success Response (204 No Content)
-
-Empty body.
-
----
+### Success Response
+- **204 No Content**
 
 ### Error Responses
+- **400** Validation error
+- **409** Import cannot be cancelled
 
-#### 400 — Validation Error
-Invalid JSON or missing/empty `importId`.
-
-
-#### 409 — Conflict
-Import cannot be cancelled (e.g. already `PROCESSING` or `DONE`).
+</details>
 
 ---
 
-## GET /customers/import/status
+<details>
+<summary><strong>GET /customers/import/status</strong></summary>
 
 Returns the current status of an import.
 
@@ -411,9 +376,6 @@ Required permission: `PERM_READ`
 ---
 
 ### Error Responses
+- **404** Import does not exist or has expired
 
-#### 404 — Not Found
-Import does not exist or has expired.
-
-
----
+</details>
