@@ -6,7 +6,6 @@ https://clock.madebyflow.de/api/v1/integration
 
 All endpoints in this document are relative to this base URL.
 
----
 
 ##  Authentication
 
@@ -21,7 +20,6 @@ API keys have permissions. Endpoints require either:
 - `PERM_READ`
 - `PERM_WRITE`
 
----
 
 ## Error Object Format
 
@@ -48,11 +46,9 @@ API keys have permissions. Endpoints require either:
 
 </details>
 
----
 
 # Work Time Endpoints
 
----
 
 <details>
 <summary><strong>GET /work-times</strong></summary>
@@ -156,7 +152,6 @@ Newest entries are returned first.
 
 </details>
 
----
 
 #  Customer Import Endpoints
 
@@ -169,7 +164,6 @@ The import is a **session-based workflow** identified by `importId`.
 4. **STATUS** — optional poll status
 5. **CANCEL** — optional abort import
 
----
 
 <details>
 <summary><strong>POST /customers/import/init</strong></summary>
@@ -379,3 +373,4 @@ Required permission: `PERM_READ`
 - **404** Import does not exist or has expired
 
 </details>
+
