@@ -1,5 +1,7 @@
 # PRIMA Clock Integration API Documentation
 ![API Version](https://img.shields.io/badge/API-v1--stable-success)
+![Last Updated](https://img.shields.io/badge/Last%20Updated-2026--01--26-blue)
+
 
 ```
 https://clock.madebyflow.de/api/v1/integration
@@ -355,4 +357,5 @@ Required permission: `PERM_READ`
 
 ### Error Responses
 - **404** Import does not exist or has expired
+
 
