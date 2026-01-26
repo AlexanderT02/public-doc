@@ -143,19 +143,19 @@ Newest entries are returned first.
 - **400 — Validation Error**  
   Invalid parameters (e.g. invalid timezone)
 
-</details>
 
-
-#  Customer Import Endpoints
+# Customer Import Endpoints
 
 The import is a **session-based workflow** identified by `importId`.
 
-### Workflow
-1. **INIT** — announce import size
-2. **PAGE** — send pages
-3. **FINALIZE** — apply import
-4. **STATUS** — optional poll status
-5. **CANCEL** — optional abort import
+### Required Workflow
+1. **INIT** — announce import size  
+2. **PAGE** — send pages  
+3. **FINALIZE** — apply import  
+
+### Optional Endpoints
+- **STATUS** — poll import status  
+- **CANCEL** — abort import session
 
 
 ## POST /customers/import/init
@@ -356,4 +356,3 @@ Required permission: `PERM_READ`
 ### Error Responses
 - **404** Import does not exist or has expired
 
-</details>
