@@ -1,4 +1,5 @@
 # PRIMA Clock Integration API Documentation
+![API Version](https://img.shields.io/badge/API-v1--stable-success)
 
 ```
 https://clock.madebyflow.de/api/v1/integration
@@ -23,8 +24,7 @@ API keys have permissions. Endpoints require either:
 
 ## Error Object Format
 
-<details>
-<summary><strong>Show error object structure</strong></summary>
+
 
 ```json
 {
@@ -44,20 +44,17 @@ API keys have permissions. Endpoints require either:
 - `errors[]` is typically present for validation errors (HTTP 400)
 - `code` values depend on the server-side error mapping
 
-</details>
 
 
 # Work Time Endpoints
 
 
-<details>
-<summary><strong>GET /work-times</strong></summary>
+## GET /work-times
 
 Exports finished work time entries in a paginated format.
 
 Required permission: `PERM_READ`
 
----
 
 ### Query Parameters
 
@@ -69,7 +66,6 @@ Required permission: `PERM_READ`
 | `from` | date (`YYYY-MM-DD`) | no | — | Start date (inclusive) |
 | `to` | date (`YYYY-MM-DD`) | no | — | End date (inclusive) |
 
----
 
 ### Date Filter Logic (`from` / `to`)
 
@@ -79,7 +75,6 @@ Required permission: `PERM_READ`
 - The `created` timestamp is evaluated in UTC
 - The `timezone` parameter does not affect filtering
 
----
 
 ### Sorting
 
@@ -89,7 +84,6 @@ Results are sorted by:
 
 Newest entries are returned first.
 
----
 
 ### Response (200 OK)
 
@@ -143,7 +137,6 @@ Newest entries are returned first.
 }
 ```
 
----
 
 ### Error Responses
 
@@ -165,14 +158,12 @@ The import is a **session-based workflow** identified by `importId`.
 5. **CANCEL** — optional abort import
 
 
-<details>
-<summary><strong>POST /customers/import/init</strong></summary>
+## POST /customers/import/init
 
 Initializes a new customer import session.
 
 Required permission: `PERM_WRITE`
 
----
 
 ### Request Body
 
@@ -185,9 +176,6 @@ Required permission: `PERM_WRITE`
 }
 ```
 
----
-
-### Fields
 
 | Field | Type | Required | Description |
 |------|------|----------|-------------|
@@ -196,8 +184,6 @@ Required permission: `PERM_WRITE`
 | `totalCustomers` | integer | yes | Expected total customers (≥ 0) |
 | `pageSize` | integer | yes | Page size used (≥ 1) |
 
----
-
 ### Success Response
 - **201 Created** — empty body
 
@@ -205,18 +191,15 @@ Required permission: `PERM_WRITE`
 - **400** Validation error
 - **409** Import already active
 
-</details>
 
----
 
-<details>
-<summary><strong>POST /customers/import/page</strong></summary>
+## POST /customers/import/page
 
 Uploads one page of customer data.
 
 Required permission: `PERM_WRITE`
 
----
+
 
 ### Request Body
 
@@ -238,7 +221,18 @@ Required permission: `PERM_WRITE`
 }
 ```
 
----
+| Field | Type | Required | Description |
+|------|------|----------|-------------|
+| `importId` | string | yes | Import session identifier |
+| `page` | integer | yes | Zero-based page index (must be ≥ 0) |
+| `customers` | array | yes | Customers in this page (must not be empty) |
+
+| Field | Type | Required | Description |
+|------|------|----------|-------------|
+| `internalId` | string | yes | Unique customer identifier |
+| `name` | string | yes | Customer name |
+| `place` | string | no | The place where the customer is located |
+
 
 ### Behavior
 
@@ -246,7 +240,6 @@ Required permission: `PERM_WRITE`
 - Duplicate page submissions are accepted (last wins)
 - Status switches to `READY` when all pages are received
 
----
 
 ### Success Response
 - **202 Accepted**
@@ -255,18 +248,16 @@ Required permission: `PERM_WRITE`
 - **400** Validation error
 - **409** Import not accepting pages
 
-</details>
 
----
 
-<details>
-<summary><strong>POST /customers/import/finalize</strong></summary>
+
+## POST /customers/import/finalize
 
 Finalizes the import and applies changes.
 
 Required permission: `PERM_WRITE`
 
----
+
 
 ### Request Body
 
@@ -276,7 +267,11 @@ Required permission: `PERM_WRITE`
 }
 ```
 
----
+| Field | Type | Required | Description |
+|------|------|----------|-------------|
+| `importId` | string | yes | Import session identifier |
+
+
 
 ### Finalize Validation
 
@@ -285,7 +280,7 @@ Required permission: `PERM_WRITE`
 - Staged customer count equals `totalCustomers`
 - Staging data exists
 
----
+
 
 ### Success Response
 - **202 Accepted**
@@ -294,18 +289,14 @@ Required permission: `PERM_WRITE`
 - **400** Validation error
 - **409** Import not ready or validation failed
 
-</details>
 
----
-
-<details>
-<summary><strong>POST /customers/import/cancel</strong></summary>
+## POST /customers/import/cancel
 
 Cancels an import session and deletes staging data.
 
 Required permission: `PERM_WRITE`
 
----
+
 
 ### Request Body
 
@@ -315,7 +306,9 @@ Required permission: `PERM_WRITE`
 }
 ```
 
----
+| Field | Type | Required | Description |
+|------|------|----------|-------------|
+| `importId` | string | yes | Import session identifier |
 
 ### Behavior
 
@@ -325,7 +318,7 @@ Required permission: `PERM_WRITE`
   - FAILED
 - Staging data is deleted
 
----
+
 
 ### Success Response
 - **204 No Content**
@@ -334,18 +327,11 @@ Required permission: `PERM_WRITE`
 - **400** Validation error
 - **409** Import cannot be cancelled
 
-</details>
-
----
-
-<details>
-<summary><strong>GET /customers/import/status</strong></summary>
+## GET /customers/import/status
 
 Returns the current status of an import.
 
 Required permission: `PERM_READ`
-
----
 
 ### Query Parameters
 
@@ -353,7 +339,6 @@ Required permission: `PERM_READ`
 |------|------|----------|-------------|
 | `importId` | string | yes | Import session identifier |
 
----
 
 ### Response (200 OK)
 
@@ -367,10 +352,8 @@ Required permission: `PERM_READ`
 }
 ```
 
----
 
 ### Error Responses
 - **404** Import does not exist or has expired
 
 </details>
-
