@@ -9,6 +9,19 @@ https://clock.madebyflow.de/api/v1/integration
 
 All endpoints in this document are relative to this base URL.
 
+# Table of Contents
+
+- [Authentication](#authentication)
+- [Error Object Format](#error-object-format)
+- [Work Time Endpoints](#work-time-endpoints)
+  - [GET /work-times](#get-work-times)
+- [Customer Import Endpoints](#customer-import-endpoints)
+  - [POST /customers/import/init](#post-customersimportinit)
+  - [POST /customers/import/page](#post-customersimportpage)
+  - [POST /customers/import/finalize](#post-customersimportfinalize)
+  - [POST /customers/import/cancel](#post-customersimportcancel)
+  - [GET /customers/import/status](#get-customersimportstatus)
+
 
 ##  Authentication
 
@@ -87,7 +100,7 @@ Results are sorted by:
 Newest entries are returned first.
 
 
-### Response (200 OK)
+### Response Example (200 OK)
 
 ```json
 {
@@ -138,6 +151,44 @@ Newest entries are returned first.
   }
 }
 ```
+
+### Response Model
+
+Represents one finished work time entry returned by the export.
+
+| Field | Type | Nullable | Description |
+|----------------|----------------------|-----------|----------------------------------------------|
+| companyId | string | no | Customer / company identifier |
+| employeeId | string | no | Internal employee identifier |
+| docType | integer | yes | ERP document type |
+| serialYear | integer | yes | ERP document year |
+| docId | integer | yes | ERP document number |
+| taskId | integer | no | Unique task or work entry ID |
+| notes | string | yes | Optional free text notes |
+| startTask | datetime (ISO-8601) | no | Task start timestamp with timezone |
+| endTask | datetime (ISO-8601) | no | Task end timestamp with timezone |
+| created | datetime (UTC ISO-8601) | no | Creation timestamp in UTC |
+| updated | datetime (UTC ISO-8601) | no | Last update timestamp in UTC |
+| projects | array<Project> | no | Associated projects (may be empty) |
+
+### PageMeta
+
+Pagination information for the current result set.
+
+| Field | Type | Nullable | Description |
+|--------------|-----------|-----------|-------------------------------|
+| page | integer | no | Current page index (zero-based) |
+| size | integer | no | Page size |
+| totalElements | integer | no | Total number of records |
+| totalPages | integer | no | Total number of pages |
+
+#### Notes
+
+- All timestamps use ISO-8601 format  
+- `created` and `updated` are always UTC  
+- `startTask` and `endTask` respect the requested `timezone` parameter  
+- `projects` can be an empty array but is never null  
+
 
 
 ### Error Responses
@@ -357,5 +408,6 @@ Required permission: `PERM_READ`
 
 ### Error Responses
 - **404** Import does not exist or has expired
+
 
 
