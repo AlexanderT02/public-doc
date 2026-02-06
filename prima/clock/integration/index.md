@@ -9,7 +9,7 @@ https://clock.madebyflow.de/api/v1/integration
 
 All endpoints in this document are relative to this base URL.
 
-# Table of Contents
+## Table of Contents
 
 - [Authentication](#authentication)
 - [Error Object Format](#error-object-format)
@@ -408,6 +408,7 @@ Required permission: `PERM_READ`
 
 ### Error Responses
 - **404** Import does not exist or has expired
+
 
 
 
