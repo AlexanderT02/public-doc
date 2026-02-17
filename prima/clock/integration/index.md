@@ -1,6 +1,6 @@
 # PRIMA Clock Integration API Documentation
 ![API Version](https://img.shields.io/badge/API-v1--stable-success)
-![Last Updated](https://img.shields.io/badge/Last%20Updated-2026--02--06-blue)
+![Last Updated](https://img.shields.io/badge/Last%20Updated-2026--02--17-blue)
 
 
 ```
@@ -77,7 +77,7 @@ Required permission: `PERM_READ`
 |------|------|----------|---------|-------------|
 | `page` | integer | no | `0` | Zero-based page index |
 | `size` | integer | no | `100` | Number of items per page |
-| `timezone` | string | no | `Europe/Rome` | IANA timezone used to convert timestamps |
+| `timezone` | string | no | `Europe/Rome` | IANA timezone applied to `startTask` and `endTask` |
 | `from` | date (`YYYY-MM-DD`) | no | — | Start date (inclusive) |
 | `to` | date (`YYYY-MM-DD`) | no | — | End date (inclusive) |
 
@@ -95,7 +95,7 @@ Required permission: `PERM_READ`
 
 Results are sorted by:
 1. `created` (descending)
-2. `id` (descending)
+2. `taskId` (descending)
 
 Newest entries are returned first.
 
@@ -113,10 +113,10 @@ Newest entries are returned first.
       "docId": 4711,
       "taskId": 987654,
       "notes": "Implementation work",
-      "startTask": "2026-01-25T08:30:00+01:00",
-      "endTask": "2026-01-25T12:15:00+01:00",
-      "created": "2026-01-25T12:15:10Z",
-      "updated": "2026-01-25T12:16:02Z",
+      "startTask": "2026-02-17T09:17:00",
+      "endTask": "2026-02-17T10:17:00",
+      "created": "2026-02-17T09:25:58.394241Z",
+      "updated": "2026-02-17T09:25:58.394241Z",
       "projects": [
         {
           "projectId": 42,
@@ -136,10 +136,10 @@ Newest entries are returned first.
       "docId": null,
       "taskId": 987655,
       "notes": null,
-      "startTask": "2026-01-26T09:00:00+01:00",
-      "endTask": "2026-01-26T10:30:00+01:00",
-      "created": "2026-01-26T10:30:05Z",
-      "updated": "2026-01-26T10:30:05Z",
+      "startTask": "2026-02-17T08:24:38.500843",
+      "endTask": "2026-02-17T08:51:24.020813",
+      "created": "2026-02-17T07:24:38.502750Z",
+      "updated": "2026-02-17T07:51:24.032106Z",
       "projects": []
     }
   ],
@@ -165,10 +165,10 @@ Represents one finished work time entry returned by the export.
 | docId | integer | yes | ERP document number |
 | taskId | integer | no | Unique task or work entry ID |
 | notes | string | yes | Optional free text notes |
-| startTask | datetime (ISO-8601) | no | Task start timestamp with timezone |
-| endTask | datetime (ISO-8601) | no | Task end timestamp with timezone |
-| created | datetime (UTC ISO-8601) | no | Creation timestamp in UTC |
-| updated | datetime (UTC ISO-8601) | no | Last update timestamp in UTC |
+| startTask | local datetime (ISO-8601, no offset) | no | Task start in requested timezone |
+| endTask   | local datetime (ISO-8601, no offset) | no | Task end in requested timezone |
+| created   | instant (ISO-8601 UTC, with Z) | no | Creation timestamp in UTC |
+| updated   | instant (ISO-8601 UTC, with Z) | no | Last update timestamp in UTC |
 | projects | array<Project> | no | Associated projects (may be empty) |
 
 ### PageMeta
@@ -182,13 +182,26 @@ Pagination information for the current result set.
 | totalElements | integer | no | Total number of records |
 | totalPages | integer | no | Total number of pages |
 
-#### Notes
+### Timestamp Semantics
 
-- All timestamps use ISO-8601 format  
-- `created` and `updated` are always UTC  
-- `startTask` and `endTask` respect the requested `timezone` parameter  
-- `projects` can be an empty array but is never null  
+The API returns two kinds of timestamps.
 
+### Absolute timestamps (system events, UTC)
+Real points in time — always UTC and must not be timezone-converted for filtering.
+
+| Field   | Type    | Format        | Example                     |
+|--------|--------|-------------|-----------------------------|
+| created | Instant | ISO-8601 UTC | 2026-02-17T09:25:58.394241Z |
+| updated | Instant | ISO-8601 UTC | 2026-02-17T09:25:58.394241Z |
+
+
+### Business timestamps (worked time, local)
+Employee working time in the requested `timezone`.
+
+| Field     | Type            | Format              | Example             |
+|----------|----------------|---------------------|---------------------|
+| startTask | Local date-time | ISO-8601 (no offset) | 2026-02-17T10:17:00 |
+| endTask   | Local date-time | ISO-8601 (no offset) | 2026-02-17T11:17:00 |
 
 
 ### Error Responses
@@ -408,6 +421,7 @@ Required permission: `PERM_READ`
 
 ### Error Responses
 - **404** Import does not exist or has expired
+
 
 
 
