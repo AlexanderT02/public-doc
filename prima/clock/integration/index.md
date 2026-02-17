@@ -95,51 +95,48 @@ Required permission: `PERM_READ`
 
 Results are sorted by:
 1. `created` (descending)
-2. `taskId` (descending)
+2. `workTimeId` (descending)
 
 Newest entries are returned first.
 
 
+
 ### Response Example (200 OK)
 
-```json
+``` json
 {
   "result": [
     {
-      "companyId": "CUST-INT-001",
-      "employeeId": "EMP-INT-042",
-      "docType": 1,
-      "serialYear": 2026,
-      "docId": 4711,
-      "taskId": 987654,
+      "companyId": "709722",
+      "employeeId": "27",
+      "workTimeId": 987654,
       "notes": "Implementation work",
       "startTask": "2026-02-17T09:17:00",
       "endTask": "2026-02-17T10:17:00",
       "created": "2026-02-17T09:25:58.394241Z",
       "updated": "2026-02-17T09:25:58.394241Z",
+      "document": {
+        "docType": 1,
+        "year": 2026,
+        "docId": "4711"
+      },
       "projects": [
         {
           "projectId": 42,
           "projectName": "Website Relaunch"
-        },
-	{
-          "projectId": 20,
-          "projectName": "SalesViewer"
         }
       ]
     },
     {
-      "companyId": "CUST-INT-002",
-      "employeeId": "EMP-INT-042",
-      "docType": null,
-      "serialYear": null,
-      "docId": null,
-      "taskId": 987655,
+      "companyId": "114",
+      "employeeId": "715672",
+      "workTimeId": 987655,
       "notes": null,
       "startTask": "2026-02-17T08:24:38.500843",
       "endTask": "2026-02-17T08:51:24.020813",
       "created": "2026-02-17T07:24:38.502750Z",
       "updated": "2026-02-17T07:51:24.032106Z",
+      "document": null,
       "projects": []
     }
   ],
@@ -154,26 +151,40 @@ Newest entries are returned first.
 
 ### Response Model
 
-Represents one finished work time entry returned by the export.
+Represents a single exported finished work time entry.
 
 | Field | Type | Nullable | Description |
 |----------------|----------------------|-----------|----------------------------------------------|
-| companyId | string | no | Customer / company identifier |
-| employeeId | string | no | Internal employee identifier |
-| docType | integer | yes | ERP document type |
-| serialYear | integer | yes | ERP document year |
-| docId | integer | yes | ERP document number |
+| companyId | string | no | Internal customer / company identifier (ERGO) |
+| employeeId | string | no | Internal employee identifier  (ERGO)|
 | taskId | integer | no | Unique task or work entry ID |
 | notes | string | yes | Optional free text notes |
 | startTask | local datetime (ISO-8601, no offset) | no | Task start in requested timezone |
 | endTask   | local datetime (ISO-8601, no offset) | no | Task end in requested timezone |
 | created   | instant (ISO-8601 UTC, with Z) | no | Creation timestamp in UTC |
 | updated   | instant (ISO-8601 UTC, with Z) | no | Last update timestamp in UTC |
-| projects | array<Project> | no | Associated projects (may be empty) |
+| document | object<[Document](#document)> | yes | Related ERP document |
+| projects | array<[Project](#project)> | no | Associated projects (may be empty) |
 
-### PageMeta
 
-Pagination information for the current result set.
+
+#### Document
+
+| Field | Type | Nullable | Description |
+|------|------|------|------|
+| docType | integer | no | ERP document type |
+| year | integer | no | Document year |
+| docId | string | no | Document number |
+
+
+#### Project
+
+| Field | Type | Nullable | Description |
+|------|------|------|------|
+| projectId | integer | no | Project identifier |
+| projectName | string | no | Project name |
+
+#### PageMeta
 
 | Field | Type | Nullable | Description |
 |--------------|-----------|-----------|-------------------------------|
@@ -421,6 +432,7 @@ Required permission: `PERM_READ`
 
 ### Error Responses
 - **404** Import does not exist or has expired
+
 
 
 
